@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useRef } from "react";
+import { useRef, RefObject } from "react";
 import { useAutoSave } from "@/hooks/useAutoSave";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { EditorToolbar } from "@/components/canvas/EditorToolbar";
@@ -16,7 +16,7 @@ interface EditorLayoutProps {
 }
 
 export function EditorLayout({ userId }: EditorLayoutProps) {
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null) as RefObject<HTMLDivElement>;
 
   useAutoSave(userId);
   useKeyboardShortcuts();
