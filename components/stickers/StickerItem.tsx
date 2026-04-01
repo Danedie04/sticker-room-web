@@ -22,7 +22,7 @@ export function StickerItem({ sticker, index }: StickerItemProps) {
   const { room, addSticker, editor } = useRoomStore();
 
   const handleDragStart = useCallback(
-    (e: React.DragEvent) => {
+    (e: React.DragEvent<HTMLButtonElement>) => {
       e.dataTransfer.setData(
         "application/sticker",
         JSON.stringify(sticker)
@@ -87,33 +87,35 @@ export function StickerItem({ sticker, index }: StickerItemProps) {
     soundManager.playDrop();
   }, [sticker, room, editor.snapToGrid, addSticker]);
 
+  // motion.div handles entry animation; plain <button> handles native HTML drag
+  // (motion.button overrides onDragStart with its own PanInfo type — incompatible)
   return (
-    <motion.button
+    <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{
-        duration: 0.2,
-        delay: Math.min(index * 0.03, 0.3),
-      }}
-      draggable
-      onDragStart={handleDragStart}
-      onClick={handleClick}
-      title={sticker.name}
-      className="
-        sticker-panel-item
-        flex flex-col items-center justify-center gap-1
-        p-2 rounded-2xl
-        bg-background border border-cozy-border
-        hover:border-primary hover:shadow-soft hover:bg-accent/30
-        active:scale-95
-        transition-all duration-150
-        cursor-grab active:cursor-grabbing
-      "
+      transition={{ duration: 0.2, delay: Math.min(index * 0.03, 0.3) }}
     >
-      <span className="text-3xl leading-none select-none">{sticker.emoji}</span>
-      <span className="text-[10px] text-cozy-muted truncate w-full text-center leading-tight">
-        {sticker.name}
-      </span>
-    </motion.button>
+      <button
+        draggable
+        onDragStart={handleDragStart}
+        onClick={handleClick}
+        title={sticker.name}
+        className="
+          sticker-panel-item w-full
+          flex flex-col items-center justify-center gap-1
+          p-2 rounded-2xl
+          bg-background border border-cozy-border
+          hover:border-primary hover:shadow-soft hover:bg-accent/30
+          active:scale-95
+          transition-all duration-150
+          cursor-grab active:cursor-grabbing
+        "
+      >
+        <span className="text-3xl leading-none select-none">{sticker.emoji}</span>
+        <span className="text-[10px] text-cozy-muted truncate w-full text-center leading-tight">
+          {sticker.name}
+        </span>
+      </button>
+    </motion.div>
   );
 }
